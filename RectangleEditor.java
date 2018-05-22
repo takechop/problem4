@@ -17,8 +17,11 @@ import java.awt.Panel;
 import java.awt.BorderLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Container;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 
-public class RectangleEditor extends Applet implements Runnable{
+public class RectangleEditor extends Applet{
     Thread thread = null;
     Color col;
     //runメソッドない出できたRectangleのリストをとりあえずここに格納
@@ -26,13 +29,19 @@ public class RectangleEditor extends Applet implements Runnable{
     private boolean running = true;
     InputPanel input;
     DisplayCanvas display;
+    Board board = new Board();
+    Command command = new Command(board);
     
+
     //GUIの初期化
     public void init(){
 	//背景を白にする
 	setBackground(Color.white);
+	//レイアウトわからない
+	//	setLayout(new FlowLayout());
 	//InputPanelクラスに自分自身を渡す
-	input = new InputPanel(this);
+	this.input = new InputPanel(this);
+	this.input.setLayout(new FlowLayout());
 	//DisplayCanvasクラスに自分自身を渡す
 	display = new DisplayCanvas(this);
 
@@ -40,10 +49,8 @@ public class RectangleEditor extends Applet implements Runnable{
 	add(input, BorderLayout.NORTH);
 	//ボードにDisplayCanvasを追加する
 	add(display, BorderLayout.SOUTH);
-	
-	//マルチスレッド開始
-	thread = new Thread(this);
-	thread.start();
+
+
     }
 
     //GUIの描画処理
@@ -54,16 +61,14 @@ public class RectangleEditor extends Applet implements Runnable{
 	    g.setColor(rect.getColor());
 	    g.fillRect(rect.getX(),rect.getY(),rect.getW(),rect.getH());
 	}
+	start();
     }
 
-    public void run(){
+    public void start(){
 	try{
 	    Scanner scan = new Scanner(System.in);
-	    Command command = new Command();
-	    Board board = new Board();
 	
-	    while(true){
-		try{
+	    try{
 		    //選択画面
 		    System.out.println("1:create");
 		    System.out.println("2:move");
@@ -75,19 +80,19 @@ public class RectangleEditor extends Applet implements Runnable{
 		    System.out.println("8:displayBoard");
 		    System.out.println("9:exit");
 		
-		    int choices = scan.nextInt();
+		    //  int choices = scan.nextInt();
 		
 		    //Commandクラスに選択した操作とリストを送る
-		    command.selected(choices,board);
-		
+		    //   command.selected(choices);
 		    this.setRectList(board.rectangles);
 		
-		    repaint();
+		    //	    repaint();
+		    
 		}catch(InputMismatchException e){
 		    System.out.println("操作番号を入力してください");
 		    scan.next();
 		}
-	    }
+	    
 	    //握りつぶしちゃいけない気がする
 	}catch(java.security.AccessControlException e){
 	    System.out.println("アプレットを閉じてください");
@@ -107,36 +112,114 @@ public class RectangleEditor extends Applet implements Runnable{
 
 
 
-class InputPanel extends Panel implements ActionListener {
+class InputPanel extends Panel implements ActionListener{
+ 
+    //this.setLayout(new FlowLayout(FlowLayout.CENTER));
+
+    Panel[] panel = new Panel[5];
+
     //テキストフィールド作成
-    TextField[] valueField = new TextField[4];
+    TextField[] valueField = new TextField[5];
+    TextField[] moveField = new TextField[2];
+    TextField[] expandField = new TextField[2];
+    TextField[] shrinkField = new TextField[2];
     //width,height,x,yを格納するための変数
     double[] value = new double[4];
+    String value_c;
+    double[] moveValue = new double[2];
+    double[] expandValue = new double[2];
+    double[] shrinkValue = new double[2];
     //表示させるためのボタン
     Button dispButton;
+    Button moveButton;
+    Button expandButton;
+    Button shrinkButton;
+    //消去するボタン
+    Button deleteButton;
+    Button deleteAllButton;
     //親はActionExampleだよって言うことを示す(今回の場合はRectangleEditor？)
     RectangleEditor parent;
+    //ラベル作成
+    Label[] label = new Label[5];
+    Label[] moveLabel = new Label[2];
+    Label[] expandLabel = new Label[2];
+    Label[] shrinkLabel = new Label[2];
     //実際の処理
     InputPanel(RectangleEditor app) {
 	//親自身を受け取る
 	parent = app;
+	/*
 	//ラベル作成
 	Label[] label = new Label[4];
+	*/
+	for(int i = 0; i < 5; i++){
+	    panel[i] = new Panel();
+	}
 	//ラベル情報入力
-	label[0] = new Label("width=");
-	label[1] = new Label("height= ");
-	label[2] = new Label("x =");
-	label[3] = new Label("y =");
+	label[0] = new Label("w= ");
+	label[1] = new Label("h= ");
+	label[2] = new Label("x= ");
+	label[3] = new Label("y= ");
+	label[4] = new Label("c= ");
 	//ラベルとテキストフィールドをボード上に作成
-	for (int i = 0; i < 4; i++) {
-	    this.add(label[i]);
+	for (int i = 0; i < 5; i++) {
+	    this.panel[0].add(label[i]);
 	    this.valueField[i] = new TextField( );
-	    this.add(this.valueField[i]);
+	    this.panel[0].add(this.valueField[i]);
 	}
 	//表示させるためのボタンを作成
 	this.dispButton = new Button("Disp");
-	this.add(this.dispButton);
+	this.panel[0].add(this.dispButton);
 	this.dispButton.addActionListener(this);
+
+	Label[] moveLabel = new Label[2];
+	moveLabel[0] = new Label("x+= ");
+	moveLabel[1] = new Label("y+= ");
+	for(int i = 0; i < 2; i++){
+	    this.panel[1].add(moveLabel[i]);
+	    this.moveField[i] = new TextField("", 5);
+	    this.panel[1].add(moveField[i]);
+	}
+	this.moveButton = new Button("move");
+	this.panel[1].add(this.moveButton);
+	this.moveButton.addActionListener(this);
+
+	Label[] expandLabel = new Label[2];
+	expandLabel[0] = new Label("mx= ");
+	expandLabel[1] = new Label("my= ");
+	for(int i = 0; i < 2; i++){
+	    this.panel[2].add(expandLabel[i]);
+	    this.expandField[i] = new TextField("", 5);
+	    this.panel[2].add(expandField[i]);
+	}
+	this.expandButton = new Button("expand");
+	this.panel[2].add(this.expandButton);
+	this.expandButton.addActionListener(this);
+
+	Label[] shrinkLabel = new Label[2];
+	shrinkLabel[0] = new Label("mx= ");
+	shrinkLabel[1] = new Label("my= ");
+	for(int i = 0; i < 2; i++){
+	    this.panel[3].add(shrinkLabel[i]);
+	    this.shrinkField[i] = new TextField("", 5);
+	    this.panel[3].add(shrinkField[i]);
+	}
+	this.shrinkButton = new Button("shrink");
+	this.panel[3].add(this.shrinkButton);
+	this.shrinkButton.addActionListener(this);
+
+	this.deleteButton = new Button("delete");
+	this.panel[4].add(this.deleteButton);
+	this.deleteButton.addActionListener(this);
+
+	this.deleteAllButton = new Button("deleteAll");
+	this.panel[4].add(this.deleteAllButton);
+	this.deleteAllButton.addActionListener(this);
+	
+	for(int i = 0; i < 5; i++){
+	    this.add(this.panel[i]);
+	}
+	
     }
 
     public void actionPerformed(ActionEvent evt){
@@ -149,6 +232,8 @@ class InputPanel extends Panel implements ActionListener {
 		    //数字が入力されていれば、メンバに格納
 		    this.value[i] = new Double(this.valueField[i].getText()).doubleValue();
 	    }
+	    this.value_c = this.valueField[4].getText();
+	    this.parent.command.create((int)this.value[0], (int)this.value[1], (int)this.value[2], (int)this.value[3], this.value_c);
 	    this.parent.repaint();
 	}
     }

@@ -8,15 +8,24 @@ import java.util.InputMismatchException;
 class Command{
     Scanner scan = new Scanner(System.in);
     int index = 0;
-    RectangleEditor rectEditor = new RectangleEditor();
+    //  RectangleEditor rectEditor = new RectangleEditor();
+    Board board;
+
+    Command(Board board){
+	this.board = board;
+    }
+
+    //RectangleEditorクラスから呼び出される
+    void create(int w, int h, int x, int y, String c){
+	board.create(w,h,x,y,c);
+    }
 
     //ボードクラスのインスタンスをRectangleEditorから渡す
-    void selected(int operation, Board board){
+    void selected(int operation){
 	try{
 	    switch(operation){
 	    case 1:
 		//create
-		board.create();
 		break;
 	    
 	    case 2:

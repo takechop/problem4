@@ -23,20 +23,15 @@ public class Rectangle{
 	this.y = y;
 	
     }
-    void setColor(int c){
-	switch(c){
-	case 1:
+    void setColor(String c){
+	if(c.equals("red")){
 	    this.color = Color.red;
-	    break;
-	case 2:
+	}else if(c.equals("blue")){
 	    this.color = Color.blue;
-	    break;
-	case 3:
+	}else if(c.equals("yellow")){
 	    this.color = Color.yellow;
-	    break;
-	case 4:
+	}else if(c.equals("gray")){
 	    this.color = Color.gray;
-	    break;
 	}
     }
     void setColor(Color c){

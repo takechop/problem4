@@ -20,38 +20,21 @@ class Board{
     int index = 0;
 
     //長方形の作成
-    void create(){
+    void create(int w, int h, int x, int y, String c){
 	Rectangle rect_tmp = new Rectangle();
 	try{
-	    while(true){
-		System.out.println("座標情報");
-		System.out.print("width : ");
-		int w = scan.nextInt();
-		System.out.print("height : ");
-		int h = scan.nextInt();
-		System.out.print("x : ");
-		int x = scan.nextInt();
-		System.out.print("y : ");
-		int y = scan.nextInt();
-		System.out.println("色情報");
-		System.out.println("1 red\n2 blue\n3 yellow\n4 grey");
-		System.out.print("Color : ");
-		int c = scan.nextInt();
-		//長方形がボードに収まり
-		if(this.rectangleSizeCheck(w,h,x,y) == true){
-		    //長方形に被りがない
-		    if(this.rectangleMatchCheck(w,h,x,y) == true){
-			//色がちゃんと指定されている
-			if(this.rectangleColorCheck(c) == true){
-			    if(this.rectangles.size() != 10){
-				rect_tmp.setElement(w,h,x,y);
-				rect_tmp.setColor(c);
-				this.rectangles.add(rect_tmp);
-				break;
-			    }else{
-				System.out.println("長方形をこれ以上作成できません");
-				break;
-			    }
+	    //長方形がボードに収まり
+	    if(this.rectangleSizeCheck(w,h,x,y) == true){
+		//長方形に被りがない
+		if(this.rectangleMatchCheck(w,h,x,y) == true){
+		    //色がちゃんと指定されている
+		    if(this.rectangleColorCheck(c) == true){
+			if(this.rectangles.size() != 10){
+			    rect_tmp.setElement(w,h,x,y);
+			    rect_tmp.setColor(c);
+			    this.rectangles.add(rect_tmp);
+			}else{
+			    System.out.println("長方形をこれ以上作成できません");
 			}
 		    }
 		}
@@ -61,6 +44,7 @@ class Board{
 	    scan.next();
 	}
     }
+
     
     //長方形がボードに収まるか確認
     boolean rectangleSizeCheck(int w, int h, int x, int y){
@@ -87,11 +71,12 @@ class Board{
     }
 
     //長方形の色がちゃんと指定されているか確認
-    boolean rectangleColorCheck(int c){
-	if(c >= 1 && c <= 4){
+    boolean rectangleColorCheck(String c){
+	if(c.equals("red") || c.equals("blue") ||
+	   c.equals("yellow") || c.equals("gray")){
 	    return true;
 	}else{
-	    System.out.println("色乗法は1〜4の中から選んでください");
+	    System.out.println("決められた色情報の中から選んでください");
 	    return false;
 	}
     }
