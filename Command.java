@@ -19,6 +19,10 @@ class Command{
     void create(int w, int h, int x, int y, String c){
 	board.create(w,h,x,y,c);
     }
+    
+    //
+    void move(int x0, int y0){
+    }
 
     //ボードクラスのインスタンスをRectangleEditorから渡す
     void selected(int operation){
