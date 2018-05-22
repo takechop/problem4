@@ -125,6 +125,17 @@ class Board{
 	}
     }
 
+    Rectangle selectRectangle(double mx, double my){
+	for(int i = this.rectangles.size()-1 ; i >= 0; i--){
+	    if(this.rectangles.get(i).getX() <= mx &&
+	       mx <= this.rectangles.get(i).getXW() &&
+	       this.rectangles.get(i).getY() <= my &&
+	       my <= this.rectangles.get(i).getYH()){
+		return this.rectangles.get(i);
+	    }
+	}
+    }
+	
     //処理する長方形を選び返す
     Rectangle selectRectangle(){
 	Rectangle rect_before = new Rectangle();

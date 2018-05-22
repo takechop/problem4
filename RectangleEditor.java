@@ -17,9 +17,12 @@ import java.awt.Panel;
 import java.awt.BorderLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseEvent;
 import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.Point;
 
 public class RectangleEditor extends Applet{
     Thread thread = null;
@@ -224,6 +227,7 @@ class InputPanel extends Panel implements ActionListener{
 
     public void actionPerformed(ActionEvent evt){
 	Button button = (Button)evt.getSource();
+	//create
 	if(button == this.dispButton){
 	    for(int i = 0; i < 4; i++){
 		if(this.valueField[i].getText().equals(""))
@@ -235,6 +239,14 @@ class InputPanel extends Panel implements ActionListener{
 	    this.value_c = this.valueField[4].getText();
 	    this.parent.command.create((int)this.value[0], (int)this.value[1], (int)this.value[2], (int)this.value[3], this.value_c);
 	    this.parent.repaint();
+	}else if(button == this.moveButton){
+	    for(int i = 0; i < 2; i++){
+		if(this.moveField[i].getText().equals(""))
+		    this.moveValue[i] = 0;
+		else
+		    this.moveValue[i] = new Double(this.moveField[i].getText()).doubleValue();
+	    }
+	    this.parent.command.move((int)this.moveValue[0], (int)this.moveValue[1]);
 	}
     }
 }
@@ -243,8 +255,8 @@ class InputPanel extends Panel implements ActionListener{
 
 
 
-
-class DisplayCanvas extends Canvas{
+//マウスリスナー実装したい
+class DisplayCanvas extends Canvas implements MouseListener{
     //RectangleEditorを親に持つことを示す
     RectangleEditor parent;
 
@@ -269,5 +281,11 @@ class DisplayCanvas extends Canvas{
 	g.drawString("高さは" + this.parent.input.value[1], 10, 70+h);
 	g.drawString("x座標は" + this.parent.input.value[2], 10, 70+h*2);
 	g.drawString("y座標は" + this.parent.input.value[3], 10, 70+h*3);
+    }
+
+    public void mouseClicked(MouseEvent e){
+	Point point = e.getPoint();
+	double mx = point.getX();
+	double my = point.getY();
     }
 }

@@ -51,6 +51,12 @@ public class Rectangle{
     int getY(){
 	return this.y;
     }
+    int getXW(){
+	return this.x + this.width;
+    }
+    int getYH(){
+	return this.y + this.height;
+    }
     Color getColor(){
 	return this.color;
     }
