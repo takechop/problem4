@@ -24,6 +24,7 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Point;
 
+
 public class RectangleEditor extends Applet{
     Thread thread = null;
     Color col;
@@ -264,6 +265,7 @@ class InputPanel extends Panel implements ActionListener{
 		    this.expandValue[i] = new Double(this.expandField[i].getText()).doubleValue();
 	    }
 	    //expandのメソッドに値を渡す
+	    this.parent.command.exp_shr((float)this.expandValue[0], (float)this.expandValue[1], this.parent.index_num);
 	}else if(button == this.shrinkButton){
 	    for(int i = 0; i < 2; i++){
 		if(this.shrinkField[i].getText().equals(""))
@@ -272,59 +274,60 @@ class InputPanel extends Panel implements ActionListener{
 		    this.shrinkValue[i] = new Double(this.shrinkField[i].getText()).doubleValue();
 	    }
 	    //shrinkのメソッドに値を渡す
+	    this.parent.command.exp_shr((float)this.shrinkValue[0], (float)this.shrinkValue[1], this.parent.index_num);
 	}else if(button == this.deleteButton){
 	    //deleteのメソッドを起動する
 	}else if(button == this.deleteAllButton){
 	    //deleteAllのメソッドを起動する
 	}
     }
+}
 
 
 
 
 
-    //マウスリスナー実装したい
-    class DisplayCanvas extends Canvas implements MouseListener{
-	//RectangleEditorを親に持つことを示す
-	RectangleEditor parent;
-
-	DisplayCanvas(RectangleEditor app){
-	    //親を受け取る
-	    this.parent = app;
-	}
-
-	public void display(Graphics g){
-	    //多分フォントの形式を決めてる
-	    Font font = new Font("TimesRoman", Font.BOLD,12);
-	    //フォントを指定する
-	    g.setFont(font);
-	    //色を指定する
-	    g.setColor(Color.red);
-	    //フォントのサイズを確認
-	    FontMetrics fm = g.getFontMetrics(font);
-	    //フォントのサイズを受け取る
-	    int h = fm.getHeight();
-	    //受け取ったサイズhを生かして入力された情報を表示
-	    g.drawString("幅は" + this.parent.input.value[0], 10, 70);
-	    g.drawString("高さは" + this.parent.input.value[1], 10, 70+h);
-	    g.drawString("x座標は" + this.parent.input.value[2], 10, 70+h*2);
-	    g.drawString("y座標は" + this.parent.input.value[3], 10, 70+h*3);
-	}
+//マウスリスナー実装したい
+class DisplayCanvas extends Canvas implements MouseListener {
+    //RectangleEditorを親に持つことを示す
+    RectangleEditor parent;
 	
-	public void mouseClicked(MouseEvent e){
-	    Point point = e.getPoint();
-	    double mx = point.getX();
-	    double my = point.getY();
-	    this.parent.show_();
-	    this.parent.index_num = this.parent.board.selectRectangle(mx, my);
-	}
-	public void mouseEntered(MouseEvent e){
-	}
-	public void mouseExited(MouseEvent e){
-	}
-	public void mousePressed(MouseEvent e){
-	}
-	public void mouseReleased(MouseEvent e){
-	}
+    DisplayCanvas(RectangleEditor app){
+	//親を受け取る
+	this.parent = app;
+    }
+
+    public void display(Graphics g){
+	//多分フォントの形式を決めてる
+	Font font = new Font("TimesRoman", Font.BOLD,12);
+	//フォントを指定する
+	g.setFont(font);
+	//色を指定する
+	g.setColor(Color.red);
+	//フォントのサイズを確認
+	FontMetrics fm = g.getFontMetrics(font);
+	//フォントのサイズを受け取る
+	int h = fm.getHeight();
+	//受け取ったサイズhを生かして入力された情報を表示
+	g.drawString("幅は" + this.parent.input.value[0], 10, 70);
+	g.drawString("高さは" + this.parent.input.value[1], 10, 70+h);
+	g.drawString("x座標は" + this.parent.input.value[2], 10, 70+h*2);
+	g.drawString("y座標は" + this.parent.input.value[3], 10, 70+h*3);
+    }
+	
+    public void mouseClicked(MouseEvent e){
+	Point point = e.getPoint();
+	double mx = point.getX();
+	double my = point.getY();
+	this.parent.show_();
+	this.parent.index_num = this.parent.board.selectRectangle(mx, my);
+    }
+    public void mouseEntered(MouseEvent e){
+    }
+    public void mouseExited(MouseEvent e){
+    }
+    public void mousePressed(MouseEvent e){
+    }
+    public void mouseReleased(MouseEvent e){
     }
 }

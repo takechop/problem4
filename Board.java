@@ -127,11 +127,13 @@ class Board{
 
     int selectRectangle(double mx, double my){
 	System.out.println("ここ入ってる？");
+	System.out.println("mx : " + mx + "my : " + my);
 	for(int i = this.rectangles.size()-1 ; i >= 0; i--){
 	    if(this.rectangles.get(i).getX() <= mx &&
 	       mx <= this.rectangles.get(i).getXW() &&
 	       this.rectangles.get(i).getY() <= my &&
 	       my <= this.rectangles.get(i).getYH()){
+		System.out.println("長方形番号 : " + i);
 		return i;
 	    }
 	}
