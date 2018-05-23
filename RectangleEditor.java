@@ -34,6 +34,8 @@ public class RectangleEditor extends Applet{
     DisplayCanvas display;
     Board board = new Board();
     Command command = new Command(board);
+    //rectangleEditorのindexを返す
+    int index_num = -1;
     
 
     //GUIの初期化
@@ -47,6 +49,8 @@ public class RectangleEditor extends Applet{
 	this.input.setLayout(new FlowLayout());
 	//DisplayCanvasクラスに自分自身を渡す
 	display = new DisplayCanvas(this);
+	//DisplayCanvasにaddMouseListenerを実装
+	addMouseListener(display);
 
 	//ボードにInputpanelを追加する
 	add(input, BorderLayout.NORTH);
@@ -72,29 +76,29 @@ public class RectangleEditor extends Applet{
 	    Scanner scan = new Scanner(System.in);
 	
 	    try{
-		    //選択画面
-		    System.out.println("1:create");
-		    System.out.println("2:move");
-		    System.out.println("3:expand");
-		    System.out.println("4:shrink");
-		    System.out.println("5:delete");
-		    System.out.println("6:deleteAll");
-		    System.out.println("7:intersect");
-		    System.out.println("8:displayBoard");
-		    System.out.println("9:exit");
+		//選択画面
+		System.out.println("1:create");
+		System.out.println("2:move");
+		System.out.println("3:expand");
+		System.out.println("4:shrink");
+		System.out.println("5:delete");
+		System.out.println("6:deleteAll");
+		System.out.println("7:intersect");
+		System.out.println("8:displayBoard");
+		System.out.println("9:exit");
+		System.out.println("index_num" + index_num);
+		//  int choices = scan.nextInt();
 		
-		    //  int choices = scan.nextInt();
+		//Commandクラスに選択した操作とリストを送る
+		//   command.selected(choices);
+		this.setRectList(board.rectangles);
 		
-		    //Commandクラスに選択した操作とリストを送る
-		    //   command.selected(choices);
-		    this.setRectList(board.rectangles);
-		
-		    //	    repaint();
+		//	    repaint();
 		    
-		}catch(InputMismatchException e){
-		    System.out.println("操作番号を入力してください");
-		    scan.next();
-		}
+	    }catch(InputMismatchException e){
+		System.out.println("操作番号を入力してください");
+		scan.next();
+	    }
 	    
 	    //握りつぶしちゃいけない気がする
 	}catch(java.security.AccessControlException e){
@@ -107,6 +111,9 @@ public class RectangleEditor extends Applet{
     //このクラスのRectangleリストに入れる
     public void setRectList(List<Rectangle> rect){
 	this.rectangle = rect;
+    }
+    public void show_(){
+	System.out.println("入ってる？");
     }
 }
 
@@ -239,6 +246,7 @@ class InputPanel extends Panel implements ActionListener{
 	    this.value_c = this.valueField[4].getText();
 	    this.parent.command.create((int)this.value[0], (int)this.value[1], (int)this.value[2], (int)this.value[3], this.value_c);
 	    this.parent.repaint();
+	    //move
 	}else if(button == this.moveButton){
 	    for(int i = 0; i < 2; i++){
 		if(this.moveField[i].getText().equals(""))
@@ -246,7 +254,8 @@ class InputPanel extends Panel implements ActionListener{
 		else
 		    this.moveValue[i] = new Double(this.moveField[i].getText()).doubleValue();
 	    }
-	    this.parent.command.move((int)this.moveValue[0], (int)this.moveValue[1]);
+	    this.parent.command.move((int)this.moveValue[0], (int)this.moveValue[1], this.parent.index_num);
+	    this.parent.index_num = -1;
 	}else if(button == this.expandButton){
 	    for(int i = 0; i < 2; i++){
 		if(this.expandField[i].getText().equals(""))
@@ -267,44 +276,55 @@ class InputPanel extends Panel implements ActionListener{
 	    //deleteのメソッドを起動する
 	}else if(button == this.deleteAllButton){
 	    //deleteAllのメソッドを起動する
-    }
-}
-
-
-
-
-
-//マウスリスナー実装したい
-class DisplayCanvas extends Canvas implements MouseListener{
-    //RectangleEditorを親に持つことを示す
-    RectangleEditor parent;
-
-    DisplayCanvas(RectangleEditor app){
-	//親を受け取る
-	this.parent = app;
+	}
     }
 
-    public void display(Graphics g){
-	//多分フォントの形式を決めてる
-	Font font = new Font("TimesRoman", Font.BOLD,12);
-	//フォントを指定する
-	g.setFont(font);
-	//色を指定する
-	g.setColor(Color.red);
-	//フォントのサイズを確認
-	FontMetrics fm = g.getFontMetrics(font);
-	//フォントのサイズを受け取る
-	int h = fm.getHeight();
-	//受け取ったサイズhを生かして入力された情報を表示
-	g.drawString("幅は" + this.parent.input.value[0], 10, 70);
-	g.drawString("高さは" + this.parent.input.value[1], 10, 70+h);
-	g.drawString("x座標は" + this.parent.input.value[2], 10, 70+h*2);
-	g.drawString("y座標は" + this.parent.input.value[3], 10, 70+h*3);
-    }
 
-    public void mouseClicked(MouseEvent e){
-	Point point = e.getPoint();
-	double mx = point.getX();
-	double my = point.getY();
+
+
+
+    //マウスリスナー実装したい
+    class DisplayCanvas extends Canvas implements MouseListener{
+	//RectangleEditorを親に持つことを示す
+	RectangleEditor parent;
+
+	DisplayCanvas(RectangleEditor app){
+	    //親を受け取る
+	    this.parent = app;
+	}
+
+	public void display(Graphics g){
+	    //多分フォントの形式を決めてる
+	    Font font = new Font("TimesRoman", Font.BOLD,12);
+	    //フォントを指定する
+	    g.setFont(font);
+	    //色を指定する
+	    g.setColor(Color.red);
+	    //フォントのサイズを確認
+	    FontMetrics fm = g.getFontMetrics(font);
+	    //フォントのサイズを受け取る
+	    int h = fm.getHeight();
+	    //受け取ったサイズhを生かして入力された情報を表示
+	    g.drawString("幅は" + this.parent.input.value[0], 10, 70);
+	    g.drawString("高さは" + this.parent.input.value[1], 10, 70+h);
+	    g.drawString("x座標は" + this.parent.input.value[2], 10, 70+h*2);
+	    g.drawString("y座標は" + this.parent.input.value[3], 10, 70+h*3);
+	}
+	
+	public void mouseClicked(MouseEvent e){
+	    Point point = e.getPoint();
+	    double mx = point.getX();
+	    double my = point.getY();
+	    this.parent.show_();
+	    this.parent.index_num = this.parent.board.selectRectangle(mx, my);
+	}
+	public void mouseEntered(MouseEvent e){
+	}
+	public void mouseExited(MouseEvent e){
+	}
+	public void mousePressed(MouseEvent e){
+	}
+	public void mouseReleased(MouseEvent e){
+	}
     }
 }

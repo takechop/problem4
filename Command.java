@@ -21,7 +21,13 @@ class Command{
     }
     
     //
-    void move(int x0, int y0){
+    void move(int x0, int y0,int index){
+	/*
+	Rectangle rect_move = board.rectangles.get(index);
+	if(rect_move.move(x0,y0)){
+	    board.replaceRectangle(rect_move);
+	}
+	*/
     }
 
     //ボードクラスのインスタンスをRectangleEditorから渡す

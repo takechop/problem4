@@ -125,15 +125,17 @@ class Board{
 	}
     }
 
-    Rectangle selectRectangle(double mx, double my){
+    int selectRectangle(double mx, double my){
+	System.out.println("ここ入ってる？");
 	for(int i = this.rectangles.size()-1 ; i >= 0; i--){
 	    if(this.rectangles.get(i).getX() <= mx &&
 	       mx <= this.rectangles.get(i).getXW() &&
 	       this.rectangles.get(i).getY() <= my &&
 	       my <= this.rectangles.get(i).getYH()){
-		return this.rectangles.get(i);
+		return i;
 	    }
 	}
+	return -1;
     }
 	
     //処理する長方形を選び返す
