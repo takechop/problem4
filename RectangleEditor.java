@@ -247,7 +247,26 @@ class InputPanel extends Panel implements ActionListener{
 		    this.moveValue[i] = new Double(this.moveField[i].getText()).doubleValue();
 	    }
 	    this.parent.command.move((int)this.moveValue[0], (int)this.moveValue[1]);
-	}
+	}else if(button == this.expandButton){
+	    for(int i = 0; i < 2; i++){
+		if(this.expandField[i].getText().equals(""))
+		    this.expandValue[i] = 0;
+		else
+		    this.expandValue[i] = new Double(this.expandField[i].getText()).doubleValue();
+	    }
+	    //expandのメソッドに値を渡す
+	}else if(button == this.shrinkButton){
+	    for(int i = 0; i < 2; i++){
+		if(this.shrinkField[i].getText().equals(""))
+		    this.shrinkValue[i] = 0;
+		else
+		    this.shrinkValue[i] = new Double(this.shrinkField[i].getText()).doubleValue();
+	    }
+	    //shrinkのメソッドに値を渡す
+	}else if(button == this.deleteButton){
+	    //deleteのメソッドを起動する
+	}else if(button == this.deleteAllButton){
+	    //deleteAllのメソッドを起動する
     }
 }
 
